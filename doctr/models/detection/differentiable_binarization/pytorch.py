@@ -425,8 +425,8 @@ def db_resnet152(pretrained: bool = False, **kwargs: Any) -> DBNet:
     <https://arxiv.org/pdf/1911.08947.pdf>`_, using a ResNet-50 backbone.
 
     >>> import torch
-    >>> from doctr.models import db_resnet50
-    >>> model = db_resnet50(pretrained=True)
+    >>> from doctr.models import db_resnet152
+    >>> model = db_resnet152(pretrained=True)
     >>> input_tensor = torch.rand((1, 3, 1024, 1024), dtype=torch.float32)
     >>> out = model(input_tensor)
 
