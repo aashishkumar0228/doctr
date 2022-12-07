@@ -9,7 +9,7 @@ import numpy as np
 import torch
 from torch import nn
 from torch.nn import functional as F
-from torchvision.models import resnet34, resnet50
+from torchvision.models import resnet34, resnet50, resnet152
 from torchvision.models._utils import IntermediateLayerGetter
 from torchvision.ops.deform_conv import DeformConv2d
 
@@ -17,7 +17,7 @@ from ...classification import mobilenet_v3_large
 from ...utils import load_pretrained_params
 from .base import DBPostProcessor, _DBNet
 
-__all__ = ["DBNet", "db_resnet50", "db_resnet34", "db_mobilenet_v3_large", "db_resnet50_rotation"]
+__all__ = ["DBNet", "db_resnet50", "db_resnet34", "db_mobilenet_v3_large", "db_resnet50_rotation", "db_resnet152"]
 
 
 default_cfgs: Dict[str, Dict[str, Any]] = {
@@ -409,6 +409,33 @@ def db_resnet50_rotation(pretrained: bool = False, **kwargs: Any) -> DBNet:
         "db_resnet50_rotation",
         pretrained,
         resnet50,
+        ["layer1", "layer2", "layer3", "layer4"],
+        None,
+        **kwargs,
+    )
+
+
+def db_resnet152(pretrained: bool = False, **kwargs: Any) -> DBNet:
+    """DBNet as described in `"Real-time Scene Text Detection with Differentiable Binarization"
+    <https://arxiv.org/pdf/1911.08947.pdf>`_, using a ResNet-50 backbone.
+
+    >>> import torch
+    >>> from doctr.models import db_resnet50
+    >>> model = db_resnet50(pretrained=True)
+    >>> input_tensor = torch.rand((1, 3, 1024, 1024), dtype=torch.float32)
+    >>> out = model(input_tensor)
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on our text detection dataset
+
+    Returns:
+        text detection architecture
+    """
+
+    return _dbnet(
+        "db_resnet152",
+        pretrained,
+        resnet152,
         ["layer1", "layer2", "layer3", "layer4"],
         None,
         **kwargs,
