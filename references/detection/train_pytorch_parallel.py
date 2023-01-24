@@ -113,7 +113,6 @@ def fit_one_epoch(model, train_loader, batch_transforms, optimizer, scheduler, m
         if torch.cuda.is_available():
             device = torch.device("cuda")
             images = images.to(device)
-            targets = targets.to(device)
         images = batch_transforms(images)
 
         optimizer.zero_grad()
@@ -150,7 +149,6 @@ def evaluate(model, val_loader, batch_transforms, val_metric, amp=False):
         if torch.cuda.is_available():
             device = torch.device("cuda")
             images = images.to(device)
-            targets = targets.to(device)
         images = batch_transforms(images)
         if amp:
             with torch.cuda.amp.autocast():
