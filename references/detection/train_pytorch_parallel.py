@@ -111,7 +111,9 @@ def fit_one_epoch(model, train_loader, batch_transforms, optimizer, scheduler, m
     for images, targets in progress_bar(train_loader, parent=mb):
 
         if torch.cuda.is_available():
-            images = images.cuda()
+            device = torch.device("cuda")
+            images = images.to(device)
+            targets = targets.to(device)
         images = batch_transforms(images)
 
         optimizer.zero_grad()
@@ -146,7 +148,9 @@ def evaluate(model, val_loader, batch_transforms, val_metric, amp=False):
     val_loss, batch_cnt = 0, 0
     for images, targets in val_loader:
         if torch.cuda.is_available():
-            images = images.cuda()
+            device = torch.device("cuda")
+            images = images.to(device)
+            targets = targets.to(device)
         images = batch_transforms(images)
         if amp:
             with torch.cuda.amp.autocast():
@@ -240,8 +244,9 @@ def main(args):
     else:
         logging.warning("No accessible GPU, targe device set to CPU.")
     if torch.cuda.is_available():
-        torch.cuda.set_device(args.device)
-        model = model.cuda()
+        device = torch.device("cuda")
+        model = torch.nn.DataParallel(model)
+        model.to(device)
 
     # Metrics
     val_metric = LocalizationConfusion(
